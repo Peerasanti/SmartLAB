@@ -36,7 +36,15 @@ export default function Home() {
       }
       transition={{ duration: 0.3, ease: "easeInOut"}}
     >
-      <h1 className={styles.title}>SMART LAB</h1>
+
+      <div className={styles.overlay}>
+        <h1 className={styles.title}>SMART LAB</h1>
+
+        <p className={styles.continue}>
+          Press anywhere on the screen to start your journey with us.
+        </p>
+      </div>
+
     </motion.div>
   );
 }
