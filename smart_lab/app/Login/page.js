@@ -4,6 +4,7 @@ import styles from "../styles/Login.module.css";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useTransition } from "../context/TransitionContext";
+import Link from "next/link";
 
 export default function Login() {
   const { clickPosition } = useTransition();
@@ -26,7 +27,9 @@ export default function Login() {
     >
       <div className={styles.leftSection}>
         <div className={styles.logo}>
-          <span>SMART LAB</span> {/* โลโก้ */}
+          <Link href="/">
+            <span>SMART LAB</span> {/* โลโก้ */}
+          </Link>
         </div>
 
         <div className={styles.overlay}>
@@ -52,7 +55,6 @@ export default function Login() {
           <div className={styles.linkContainer}>
             <a href="/Register" className={styles.link}>Sign Up</a>
             <a href="/ForgotPassword" className={styles.link}>Forgot Password</a>
-            <a href="/" className={styles.link}>Back</a>
           </div>
         </div>
       </div>

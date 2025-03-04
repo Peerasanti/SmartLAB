@@ -40,6 +40,11 @@
   color: #fff;
 }
 
+.logo a {
+  text-decoration: none;
+  color: inherit;
+}
+
 .overlay {
   display: flex;
   flex-direction: column;
