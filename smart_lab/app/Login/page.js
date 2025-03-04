@@ -4,15 +4,57 @@ import styles from "../styles/Login.module.css";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useTransition } from "../context/TransitionContext";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function Login() {
   const { clickPosition } = useTransition();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isEntering, setIsEntering] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setIsEntering(true);
   }, []);
+
+  const validateCredentials = () => {
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailRegex.test(email)) {
+      setError('Please enter a valid email address.');
+      return false;
+    }
+
+    if(password.length < 8) {
+      setError('Password must be at least 8 characters long.');
+      return false;
+    }
+
+    return true;
+
+  }
+
+  const handleSubmit = (e) => {
+
+    e.preventDefault();
+    setError("");
+    console.log("Email:", email);
+    console.log("Password:", password);
+
+    router.push("/Dashboard"); // for development
+
+    // if(validateCredentials()) {
+    //   try {
+    //     console.log("Login successful!");
+    //     router.push("/Home");
+    //   } catch (error) {
+    //     console.log(error);
+    //     setError("Something went wrong. Please try again.");
+    //   }
+    // }
+  };
 
   return (
     <motion.div
@@ -35,12 +77,26 @@ export default function Login() {
         <div className={styles.overlay}>
           <h1 className={styles.title}>Sign In</h1>
 
-          <form className={styles.form}>
-            <input type="email" placeholder="Email" className={styles.input} />
-            <input type="password" placeholder="Password" className={styles.input} />
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <input type="email" 
+                   placeholder="Email" 
+                   className={styles.input} 
+                   value={email}
+                   onChange={(e) => setEmail(e.target.value)}
+            />
+            <input type="password" 
+                   placeholder="Password" 
+                   className={styles.input} 
+                   value={password}
+                   onChange={(e) => setPassword(e.target.value)}
+            />
+            <a href="/ForgotPassword" className={styles.link}>
+              Forgot Password
+            </a>
             <button type="submit" className={styles.button}>
               Sign In
             </button>
+            {error && <p className={styles.error}>{error}</p>}
           </form>
 
           <div className={styles.socialButtons}>
@@ -53,8 +109,9 @@ export default function Login() {
           </div>
 
           <div className={styles.linkContainer}>
-            <a href="/Register" className={styles.link}>Sign Up</a>
-            <a href="/ForgotPassword" className={styles.link}>Forgot Password</a>
+            <Link href={"/Register"} className={styles.link}>
+                Sign Up
+            </Link>
           </div>
         </div>
       </div>
