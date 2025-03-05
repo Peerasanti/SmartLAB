@@ -91,7 +91,7 @@ export default function Login() {
                    onChange={(e) => setPassword(e.target.value)}
             />
             <a href="/ForgotPassword" className={styles.link}>
-              Forgot Password
+              Forgot Password ?
             </a>
             <button type="submit" className={styles.button}>
               Sign In
