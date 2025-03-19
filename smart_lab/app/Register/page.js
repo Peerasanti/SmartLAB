@@ -9,10 +9,93 @@ import Link from "next/link";
 export default function Register() {
   const { clickPosition } = useTransition();
   const [isEntering, setIsEntering] = useState(false);
+  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    full_name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const checkEmailExists = async (email) => {
+    try {
+      const response = await fetch("/users/check-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        return data.message;
+      }
+    } catch (error) {
+      console.error("Error checking email:", error);
+      return error.message;
+    }
+  };
+
+  const validatePassword = (password) => {
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password); 
+    const hasThreeNumbers = (password.match(/\d/g) || []).length >= 3;
+    return hasUppercase && hasSpecialChar && hasThreeNumbers;
+  }
+
 
   useEffect(() => {
     setIsEntering(true);
   }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const [full_name, email, password, confirmPassword] = Object.values(formData);
+
+    if(!validateEmail(email)) {
+      setError("Invalid email format.");
+      return;
+    }
+
+    if(!validatePassword(password)) {
+      setError("Password must have at least 1 uppercase, 1 special character, and 3 numbers.");
+      return;
+    }
+
+    if(password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    setError(""); 
+
+    try {
+      const response = await fetch("http://localhost:8000/users/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ full_name : full_name, email : email, password: password }),
+      });
+
+      const data = await response.json();
+      if(response.ok) {
+        alert("Sign up successful!");
+      } else {
+        setError(data.detail || "Sign up failed.");
+      }
+    } catch (error) {
+      console.log(error);
+      setError("Something went wrong. Please try again.");
+    }
+  };
 
   return (
     <motion.div
@@ -35,24 +118,16 @@ export default function Register() {
         <div className={styles.overlay}>
           <h1 className={styles.title}>Sign Up</h1>
 
-          <form className={styles.form}>
-            <input type="text" placeholder="Full Name" className={styles.input} />
-            <input type="email" placeholder="Email" className={styles.input} />
-            <input type="password" placeholder="Password" className={styles.input} />
-            <input type="password" placeholder="Confirm Password" className={styles.input} />
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <input type="text" name="full_name" placeholder="Full Name" onChange={handleChange} className={styles.input} />
+            <input type="email" name="email" placeholder="Email" onChange={handleChange} className={styles.input} />
+            <input type="password" name="password" placeholder="Password" onChange={handleChange} className={styles.input} />
+            <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} className={styles.input} />
+            {error && <p style={{ color: "red" }}>{error.msg}</p>}
             <button type="submit" className={styles.button}>
               Sign Up
             </button>
           </form>
-
-          <div className={styles.socialButtons}>
-            <span>or sign up with</span>
-            <div className={styles.socialIcons}>
-              <a href="#" className={styles.socialIcon}>F</a> {/* Facebook */}
-              <a href="#" className={styles.socialIcon}>G</a> {/* Google */}
-              <a href="#" className={styles.socialIcon}>A</a> {/* Apple */}
-            </div>
-          </div>
 
           <div className={styles.linkContainer}>
             <Link href={"/Login"} className={styles.link}>

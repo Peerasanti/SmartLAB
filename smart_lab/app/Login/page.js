@@ -99,15 +99,6 @@ export default function Login() {
             {error && <p className={styles.error}>{error}</p>}
           </form>
 
-          <div className={styles.socialButtons}>
-            <span>or sign in with</span>
-            <div className={styles.socialIcons}>
-              <a href="#" className={styles.socialIcon}>F</a> {/* Facebook */}
-              <a href="#" className={styles.socialIcon}>G</a> {/* Google */}
-              <a href="#" className={styles.socialIcon}>A</a> {/* Apple */}
-            </div>
-          </div>
-
           <div className={styles.linkContainer}>
             <Link href={"/Register"} className={styles.link}>
                 Sign Up
