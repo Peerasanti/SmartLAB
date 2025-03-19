@@ -25,26 +25,6 @@ export default function Register() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const checkEmailExists = async (email) => {
-    try {
-      const response = await fetch("/users/check-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: email }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        return data.message;
-      }
-    } catch (error) {
-      console.error("Error checking email:", error);
-      return error.message;
-    }
-  };
-
   const validatePassword = (password) => {
     const hasUppercase = /[A-Z]/.test(password);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password); 
@@ -88,6 +68,12 @@ export default function Register() {
       const data = await response.json();
       if(response.ok) {
         alert("Sign up successful!");
+        setFormData({
+          full_name: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
       } else {
         setError(data.detail || "Sign up failed.");
       }
@@ -119,11 +105,11 @@ export default function Register() {
           <h1 className={styles.title}>Sign Up</h1>
 
           <form className={styles.form} onSubmit={handleSubmit}>
-            <input type="text" name="full_name" placeholder="Full Name" onChange={handleChange} className={styles.input} />
-            <input type="email" name="email" placeholder="Email" onChange={handleChange} className={styles.input} />
-            <input type="password" name="password" placeholder="Password" onChange={handleChange} className={styles.input} />
-            <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} className={styles.input} />
-            {error && <p style={{ color: "red" }}>{error.msg}</p>}
+            <input type="text" name="full_name" placeholder="Full Name" onChange={handleChange} value={formData.full_name} className={styles.input} />
+            <input type="email" name="email" placeholder="Email" onChange={handleChange} value={formData.email} className={styles.input} />
+            <input type="password" name="password" placeholder="Password" onChange={handleChange} value={formData.password} className={styles.input} />
+            <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} value={formData.confirmPassword} className={styles.input} />
+            {error && <p style={{ color: "red" }}>{error}</p>}
             <button type="submit" className={styles.button}>
               Sign Up
             </button>

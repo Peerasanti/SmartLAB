@@ -43,19 +43,3 @@ async def login_user(email: str, password: str):
         raise HTTPException(status_code=400, detail="Incorrect password")
 
     return {"message": "Login successful"}
-
-@user_router.post("/users/check-email/")
-async def check_email(email: str):
-    user = await users_collection.find_one({"email": email})
-    if user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    return {"message": "Email is available"}
-
-@user_router.post("/users/check-username/")
-async def check_username(username: str):
-    user = await users_collection.find_one({"username": username})
-    if user:
-        raise HTTPException(status_code=400, detail="Username already taken")
-
-    return {"message": "Username is available"}
