@@ -9,7 +9,7 @@ from pathlib import Path
 detection_router = APIRouter()
 
 BASE_DIR = Path(__file__).resolve().parent.parent 
-MODEL_PATH = BASE_DIR / "model" / "model_for_rat.keras"
+MODEL_PATH = BASE_DIR / "detection_model" / "model_for_rat.keras"
 
 try:
     model = tf.keras.models.load_model(MODEL_PATH, safe_mode=False)
